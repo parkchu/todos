@@ -5,8 +5,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 # Create your views here.
 
-class TodosMainView(ListView):
-    model = todos
+def todos_list(request):
+    todo_list = todos.objects.all()
+    context = {'todo_list': todo_list}
+    return render(request, 'todos/todos_list.html', context)
 
 
 def add_todos(request):
@@ -18,29 +20,29 @@ def add_todos(request):
     return HttpResponseRedirect(reverse('todos:{}'.format(pichu)))
 
 def finish_todo(request):
-    todo = request.POST['pikachu']
+    todo_id = request.POST['pikachu']
     pichu = request.POST['pichu']
-    todos.objects.filter(todo=todo).update(finish="completed")
+    todos.objects.filter(id=todo_id).update(completed=True)
     return HttpResponseRedirect(reverse('todos:{}'.format(pichu)))
 
 def notfinish_todo(request):
-    todo = request.POST['pikachu']
+    todo_id = request.POST['pikachu']
     pichu = request.POST['pichu']
-    todos.objects.filter(todo=todo).update(finish="")
+    todos.objects.filter(id=todo_id).update(completed=False)
     return HttpResponseRedirect(reverse('todos:{}'.format(pichu)))
 
 def del_todo(request):
-    todo = request.POST['pikachu']
+    todo_id = request.POST['pikachu']
     pichu = request.POST['pichu']
-    todos.objects.filter(todo=todo).delete()
+    todos.objects.filter(id=todo_id).delete()
     return HttpResponseRedirect(reverse('todos:{}'.format(pichu)))
 
 def active(request):
-    active_todo = todos.objects.filter(finish="")
-    context = {'active_todo': active_todo}
-    return render(request, 'todos/active.html', context)
+    active_todo = todos.objects.filter(completed=False)
+    context = {'todo_list': active_todo}
+    return render(request, 'todos/todos_list.html', context)
 
 def completed(request):
-    completed_todo = todos.objects.filter(finish="completed")
-    context = {'completed_todo': completed_todo}
-    return render(request, 'todos/completed.html', context)
+    completed_todo = todos.objects.filter(completed=True)
+    context = {'todo_list': completed_todo}
+    return render(request, 'todos/todos_list.html', context)

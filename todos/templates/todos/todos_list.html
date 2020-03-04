@@ -12,28 +12,32 @@
 {% block todo_list %}
     <input class="toggle-all" type="checkbox">
     <ul id="todo-list" class="todo-list">
-        {% for todo in object_list %}
-        <li class="{{ todo.finish }}">
+        {% for todo in todo_list %}
+        {% if todo.completed %}
+        <li class="completed">
+        {% else %}
+        <li>
+        {% endif %}
             <div class="view">
-            {% if todo.finish == "" %}
-                <form action="{% url 'todos:finish_todo' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="pikachu" value="{{ todo.todo }}">
-                    <input type="hidden" name="pichu" value="index">
-                    <input type="submit" value="했다">
-                </form>
-            {% else %}
+            {% if todo.completed %}
                 <form action="{% url 'todos:notfinish_todo' %}" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="pikachu" value="{{ todo.todo }}">
+                    <input type="hidden" name="pikachu" value="{{ todo.id }}">
                     <input type="hidden" name="pichu" value="index">
                     <input type="submit" value="해야한다">
+                </form>
+            {% else %}
+                <form action="{% url 'todos:finish_todo' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="pikachu" value="{{ todo.id }}">
+                    <input type="hidden" name="pichu" value="index">
+                    <input type="submit" value="했다">
                 </form>
             {% endif %}
             <label class="label">{{ todo.todo }}</label>
             <form action="{% url 'todos:del_todo' %}" method="post">
                 {% csrf_token %}
-            <button class="destroy" name="pikachu" value="{{ todo }}"></button>
+            <button class="destroy" name="pikachu" value="{{ todo.id }}"></button>
                 <input type="hidden" name="pichu" value="index">
             </form>
             </div>
@@ -43,7 +47,7 @@
 {% endblock todo_list %}
 
         {% block count %}
-        <span class="todo-count">총 <strong>{{ object_list|length }}</strong> 개</span>
+        <span class="todo-count">총 <strong>{{ todo_list|length }}</strong> 개</span>
         <ul class="filters">
             <li><a class="all selected" href="/todos">전체보기</a></li>
             <li><a class="active" href="/todos/active">해야할 일</a></li>
