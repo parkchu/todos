@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}이벤트 - TODOS{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href='{% static "css/style.css" %}'>
+</head>
+<body>
+<section class="todoapp">
+  <div id="sidebar">
+    {% block sidebar %}
+    {% endblock %}
+  </div>
+  <div class="main" id="todo_list">
+    {% block todo_list %}{% endblock %}
+  </div>
+  <div class="count-container" id="count">
+    {% block count %}
+    {% endblock %}
+  </div>
+</section>
+<script src="js/app.js"></script>
+</body>
+</html>

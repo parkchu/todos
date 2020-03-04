@@ -1,0 +1,54 @@
+{% extends "todos/todos_list.html" %}
+
+{% block sidebar %}
+<h1>TODOS</h1>
+    <form action="{% url 'todos:add_todos' %}" method="post">
+      {% csrf_token %}
+    <input id="new-todo-title" type="text" name="todo" class="new-todo" placeholder="할일을 추가해주세요" autofocus>
+    <input type="hidden" name="pichu" value="completed">
+    </form>
+{% endblock sidebar %}
+
+{% block todo_list %}
+<input class="toggle-all" type="checkbox">
+    <ul id="todo-list" class="todo-list">
+        {% for todo in completed_todo %}
+        <li class="{{ todo.finish }}">
+            <div class="view">
+            {% if todo.finish == "" %}
+                <form action="{% url 'todos:finish_todo' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="pichu" value="completed">
+                    <input type="hidden" name="pikachu" value="{{ todo.todo }}">
+                    <input type="submit" value="했다">
+                </form>
+            {% else %}
+                <form action="{% url 'todos:notfinish_todo' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="pichu" value="completed">
+                    <input type="hidden" name="pikachu" value="{{ todo.todo }}">
+                    <input type="submit" value="해야한다">
+                </form>
+            {% endif %}
+            <label class="label">{{ todo.todo }}</label>
+            <form action="{% url 'todos:del_todo' %}" method="post">
+                {% csrf_token %}
+            <button class="destroy" name="pikachu" value="{{ todo }}"></button>
+                <input type="hidden" name="pichu" value="completed">
+            </form>
+            </div>
+            <input class="edit" value="">
+        </li>
+        {% endfor %}
+{% endblock todo_list %}
+
+        {% block count %}
+        <span class="todo-count">총 <strong>{{ completed_todo|length }}</strong> 개</span>
+        <ul class="filters">
+            <li><a class="active" href="/todos">전체보기</a></li>
+            <li><a class="completed" href="/todos/active">해야할 일</a></li>
+            <li><a class="all selected" href="/todos/completed">완료한 일</a></li>
+        </ul>
+
+        </ul>
+        {% endblock count %}
